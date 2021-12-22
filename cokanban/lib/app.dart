@@ -16,7 +16,13 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'CoKanban',
-      theme: ThemeData.dark(),
+      theme: ThemeData(
+        scaffoldBackgroundColor: const Color.fromARGB(255, 112, 199, 238),
+        appBarTheme: const AppBarTheme(
+          color: Color.fromARGB(255, 112, 199, 238),
+          //foregroundColor: Color.fromARGB(255, 11, 89, 128),
+        ),
+      ),
       home: const MainScreen(),
     );
   }
