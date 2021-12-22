@@ -1,3 +1,4 @@
+import 'package:cokanban/screens/create_task_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'config_screen.dart';
@@ -20,11 +21,11 @@ class _MainScreenState extends State<MainScreen> {
               onPressed: () {
                 Navigator.of(context).push(
                   MaterialPageRoute(
-                    builder: (context) => const ConfigScreen(),
+                    builder: (context) => const ProfileScreen(),
                   ),
                 );
               },
-              icon: const Icon(Icons.settings))
+              icon: const Icon(Icons.person))
         ],
       ),
       body: Column(
@@ -55,7 +56,13 @@ class _MainScreenState extends State<MainScreen> {
             flex: 1,
           ),
           IconButton(
-            onPressed: () {},
+            onPressed: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => const CreateTaskScreen(),
+                ),
+              );
+            },
             icon: const Icon(Icons.add),
           ),
           const Spacer(

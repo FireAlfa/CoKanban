@@ -1,19 +1,19 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-class ConfigScreen extends StatefulWidget {
-  const ConfigScreen({Key? key}) : super(key: key);
+class ProfileScreen extends StatefulWidget {
+  const ProfileScreen({Key? key}) : super(key: key);
 
   @override
-  _ConfigScreenState createState() => _ConfigScreenState();
+  _ProfileScreenState createState() => _ProfileScreenState();
 }
 
-class _ConfigScreenState extends State<ConfigScreen> {
+class _ProfileScreenState extends State<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Configuration Screen"),
+        title: const Text("Your Profile"),
         actions: [
           IconButton(
             onPressed: () {
