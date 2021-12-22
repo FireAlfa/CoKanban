@@ -19,7 +19,7 @@ class MyApp extends StatelessWidget {
       home: Scaffold(
         body: StreamBuilder(
           stream: FirebaseFirestore.instance
-              .doc("/users/6IIGTQHaMzxV3WqOmDek")
+              .doc("/users/cFsh1dR5zOPwrDZTvpE0e7ONc1B2")
               .snapshots(),
           builder: (
             BuildContext context,
@@ -32,7 +32,7 @@ class MyApp extends StatelessWidget {
               return const Center(child: CircularProgressIndicator());
             }
             final data = snapshot.data!.data()!;
-            return Center(child: Text(data['name']));
+            return Center(child: Text(data['nickname']));
           },
         ),
       ),
