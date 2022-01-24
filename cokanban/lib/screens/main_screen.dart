@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:scroll_snap_list/scroll_snap_list.dart';
 import 'profile_screen.dart';
+import 'package:cokanban/widgets/task.dart';
 
 class MainScreen extends StatefulWidget {
   final String userID;
@@ -45,11 +46,7 @@ class _MainScreenState extends State<MainScreen> {
                     fontSize: 30, color: Color.fromARGB(255, 0, 94, 131)),
               ),
             ),
-            const SizedBox(
-              height: 200,
-              width: 300,
-              child: Text("a"),
-            )
+            const Task(),
           ],
         ),
       ),
