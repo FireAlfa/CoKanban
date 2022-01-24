@@ -19,6 +19,7 @@ class MainScreen extends StatefulWidget {
 class _MainScreenState extends State<MainScreen> {
   final db = FirebaseFirestore.instance;
 
+  // Widget that creates the info for each column
   Widget _columnItemBuilder(BuildContext conext, int index) {
     late String text;
 
@@ -46,6 +47,9 @@ class _MainScreenState extends State<MainScreen> {
                     fontSize: 30, color: Color.fromARGB(255, 0, 94, 131)),
               ),
             ),
+            const SizedBox(
+              height: 10,
+            ),
             const Task(),
           ],
         ),
@@ -67,6 +71,8 @@ class _MainScreenState extends State<MainScreen> {
         BuildContext context,
         AsyncSnapshot<DocumentSnapshot> snapshot,
       ) {
+        CollectionReference<Map<String, dynamic>> coll =
+            db.collection("boards");
         // If we don't get the information yet, show loading indicator
         if (!snapshot.hasData) {
           return const Scaffold(
@@ -99,20 +105,25 @@ class _MainScreenState extends State<MainScreen> {
             ),
             body: Stack(
               children: [
+                // Screen sized columns for each Kanban board with side scroll
                 SingleChildScrollView(
                   child: SizedBox(
+                    // Height of column, gets screen size
                     height: (MediaQuery.of(context).size.height -
                         MediaQuery.of(context).padding.top -
                         kToolbarHeight),
                     child: ScrollSnapList(
                       onItemFocus: _onItemFocus,
-                      itemSize: MediaQuery.of(context).size.width,
+                      itemSize: MediaQuery.of(context)
+                          .size
+                          .width, // Width of column, gets screen size
                       itemCount: 3,
                       scrollDirection: Axis.horizontal,
                       itemBuilder: _columnItemBuilder,
                     ),
                   ),
                 ),
+                // Plus button to create new tasks
                 Align(
                   alignment: Alignment.bottomRight,
                   child: Padding(

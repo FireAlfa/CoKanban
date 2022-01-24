@@ -11,9 +11,9 @@ class Task extends StatelessWidget {
       alignment: Alignment.topLeft,
       padding: const EdgeInsets.all(10),
       width: 300,
-      decoration: BoxDecoration(
-          color: Colors.blue.shade300,
-          borderRadius: const BorderRadius.all(Radius.circular(10))),
+      decoration: const BoxDecoration(
+          color: Color.fromARGB(255, 177, 229, 242),
+          borderRadius: BorderRadius.all(Radius.circular(10))),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
