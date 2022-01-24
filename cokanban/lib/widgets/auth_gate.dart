@@ -1,12 +1,11 @@
+import 'package:cokanban/screens/main_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutterfire_ui/auth.dart';
 
 class AuthGate extends StatelessWidget {
-  final Widget app;
   const AuthGate({
     Key? key,
-    required this.app,
   }) : super(key: key);
 
   @override
@@ -24,7 +23,8 @@ class AuthGate extends StatelessWidget {
             ),
           );
         }
-        return app;
+        final user = FirebaseAuth.instance.currentUser!;
+        return MainScreen(userID: user.uid);
       },
     );
   }

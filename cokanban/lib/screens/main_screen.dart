@@ -5,7 +5,11 @@ import 'package:scroll_snap_list/scroll_snap_list.dart';
 import 'profile_screen.dart';
 
 class MainScreen extends StatefulWidget {
-  const MainScreen({Key? key}) : super(key: key);
+  final String userID;
+  const MainScreen({
+    Key? key,
+    required this.userID,
+  }) : super(key: key);
 
   @override
   _MainScreenState createState() => _MainScreenState();
@@ -28,31 +32,60 @@ class _MainScreenState extends State<MainScreen> {
     }
 
     return StreamBuilder(
-        stream: db.collection("tasks").doc("test2").snapshots(),
-        builder: (context, AsyncSnapshot<DocumentSnapshot> snapshot) {
-          return SizedBox(
-            width: MediaQuery.of(context).size.width,
-            child: Align(
-              alignment: Alignment.topCenter,
-              child: Column(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(0, 20, 0, 0),
-                    child: Text(
-                      text,
-                      style: const TextStyle(
-                          fontSize: 30, color: Color.fromARGB(255, 0, 94, 131)),
+        stream: db.doc("/users/${widget.userID}").snapshots(),
+        builder: (
+          BuildContext context,
+          AsyncSnapshot<DocumentSnapshot> snapshot,
+        ) {
+          // If we don't get the information yet, show loading indicator
+          if (!snapshot.hasData) {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+          // If we have data, show the screen
+          final doc = snapshot.data!.data();
+          if (doc != null) {
+            return SizedBox(
+              width: MediaQuery.of(context).size.width,
+              child: Align(
+                alignment: Alignment.topCenter,
+                child: Column(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(0, 20, 0, 0),
+                      child: Text(
+                        text,
+                        style: const TextStyle(
+                            fontSize: 30,
+                            color: Color.fromARGB(255, 0, 94, 131)),
+                      ),
                     ),
-                  ),
-                  const SizedBox(
-                    height: 200,
-                    width: 300,
-                    child: Text("a"),
-                  )
-                ],
+                    const SizedBox(
+                      height: 200,
+                      width: 300,
+                      child: Text("a"),
+                    )
+                  ],
+                ),
               ),
-            ),
-          );
+            );
+          } else // If we don't have data, create new user
+          {
+            db
+                .doc("/users/${widget.userID}")
+                .set({
+                  "UID": widget.userID.toString(),
+                  "nickname": "New User",
+                })
+                .then((_) {})
+                .catchError((_) {});
+            return const Center(
+                child: SizedBox(
+              width: 30,
+              height: 30,
+            ));
+          }
         });
   }
 
