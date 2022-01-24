@@ -19,6 +19,13 @@ class MainScreen extends StatefulWidget {
 class _MainScreenState extends State<MainScreen> {
   final db = FirebaseFirestore.instance;
 
+  Future<dynamic> getBoardAmount() async {
+    dynamic query = db.collection("boards");
+    dynamic snapshot = await query.get();
+    dynamic count = snapshot.size;
+    return count;
+  }
+
   // Widget that creates the info for each column
   Widget _columnItemBuilder(BuildContext conext, int index) {
     late String text;
@@ -32,29 +39,46 @@ class _MainScreenState extends State<MainScreen> {
     if (index == 2) {
       text = "Done";
     }
+    if (index > 2) {
+      text = "New Board";
+    }
 
-    return SizedBox(
-      width: MediaQuery.of(context).size.width,
-      child: Align(
-        alignment: Alignment.topCenter,
-        child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.fromLTRB(0, 20, 0, 0),
-              child: Text(
-                text,
-                style: const TextStyle(
-                    fontSize: 30, color: Color.fromARGB(255, 0, 94, 131)),
+    return StreamBuilder(
+        stream: db.collection("boards").snapshots(),
+        builder: (
+          BuildContext context,
+          AsyncSnapshot<QuerySnapshot> snapshot,
+        ) {
+          if (!snapshot.hasData) {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          } else {
+            return SizedBox(
+              width: MediaQuery.of(context).size.width,
+              child: Align(
+                alignment: Alignment.topCenter,
+                child: Column(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(0, 20, 0, 0),
+                      child: Text(
+                        snapshot.data!.docs.elementAt(index).get("title"),
+                        style: const TextStyle(
+                            fontSize: 30,
+                            color: Color.fromARGB(255, 0, 94, 131)),
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    const Task(),
+                  ],
+                ),
               ),
-            ),
-            const SizedBox(
-              height: 10,
-            ),
-            const Task(),
-          ],
-        ),
-      ),
-    );
+            );
+          }
+        });
   }
 
   void _onItemFocus(int index) {
@@ -71,8 +95,8 @@ class _MainScreenState extends State<MainScreen> {
         BuildContext context,
         AsyncSnapshot<DocumentSnapshot> snapshot,
       ) {
-        CollectionReference<Map<String, dynamic>> coll =
-            db.collection("boards");
+        // Future<dynamic> future = getBoardAmount();
+        // future.then((dynamic boardAmount) {boardAmount = })
         // If we don't get the information yet, show loading indicator
         if (!snapshot.hasData) {
           return const Scaffold(
@@ -105,24 +129,38 @@ class _MainScreenState extends State<MainScreen> {
             ),
             body: Stack(
               children: [
-                // Screen sized columns for each Kanban board with side scroll
-                SingleChildScrollView(
-                  child: SizedBox(
-                    // Height of column, gets screen size
-                    height: (MediaQuery.of(context).size.height -
-                        MediaQuery.of(context).padding.top -
-                        kToolbarHeight),
-                    child: ScrollSnapList(
-                      onItemFocus: _onItemFocus,
-                      itemSize: MediaQuery.of(context)
-                          .size
-                          .width, // Width of column, gets screen size
-                      itemCount: 3,
-                      scrollDirection: Axis.horizontal,
-                      itemBuilder: _columnItemBuilder,
-                    ),
-                  ),
-                ),
+                // Get Boards data
+                StreamBuilder(
+                    stream: db.collection("boards").snapshots(),
+                    builder: (
+                      BuildContext context,
+                      AsyncSnapshot<QuerySnapshot> snapshot,
+                    ) {
+                      if (!snapshot.hasData) {
+                        return const Center(
+                          child: CircularProgressIndicator(),
+                        );
+                      } else {
+                        // Screen sized columns for each Kanban board with side scroll
+                        return SingleChildScrollView(
+                          child: SizedBox(
+                            // Height of column, gets screen size
+                            height: (MediaQuery.of(context).size.height -
+                                MediaQuery.of(context).padding.top -
+                                kToolbarHeight),
+                            child: ScrollSnapList(
+                              onItemFocus: _onItemFocus,
+                              itemSize: MediaQuery.of(context)
+                                  .size
+                                  .width, // Width of column, gets screen size
+                              itemCount: snapshot.data!.size,
+                              scrollDirection: Axis.horizontal,
+                              itemBuilder: _columnItemBuilder,
+                            ),
+                          ),
+                        );
+                      }
+                    }),
                 // Plus button to create new tasks
                 Align(
                   alignment: Alignment.bottomRight,
