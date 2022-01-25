@@ -4,7 +4,12 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 class CreateTaskScreen extends StatefulWidget {
-  const CreateTaskScreen({Key? key}) : super(key: key);
+  final String todoID;
+
+  const CreateTaskScreen({
+    Key? key,
+    required this.todoID,
+  }) : super(key: key);
 
   @override
   _CreateTaskScreenState createState() => _CreateTaskScreenState();
@@ -46,7 +51,7 @@ class _CreateTaskScreenState extends State<CreateTaskScreen> {
         title: const Text("New Task"),
       ),
       body: StreamBuilder(
-        stream: db.collection("boards").snapshots(),
+        stream: db.collection("boards/${widget.todoID}/tasks").snapshots(),
         builder: (
           BuildContext context,
           AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot,
@@ -122,15 +127,22 @@ class _CreateTaskScreenState extends State<CreateTaskScreen> {
                     textStyle: const TextStyle(fontSize: 20),
                     primary: const Color.fromARGB(255, 28, 128, 165),
                   ),
-                  child: Text(doc.get("tasks").toString()),
+                  child: const Text("Add new task to To-Do"),
                   onPressed: () {
                     setState(
                       () {
-                        db.doc(uid).update(
-                          {
-                            'tasks': {'name': nameController.text}
-                          },
-                        );
+                        Map<String, dynamic> data = {
+                          'name': nameController.text,
+                          'user': userController.text,
+                          'tag': tagController.text,
+                          'description': descriptionController.text,
+                        };
+                        db
+                            .collection("/boards/${widget.todoID}/tasks")
+                            .add(data)
+                            .then((_) {
+                          Navigator.of(context).pop();
+                        });
                       },
                     );
                   },

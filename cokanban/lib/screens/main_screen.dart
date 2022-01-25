@@ -7,6 +7,7 @@ import 'package:cokanban/widgets/task.dart';
 
 class MainScreen extends StatefulWidget {
   final String userID;
+
   const MainScreen({
     Key? key,
     required this.userID,
@@ -18,6 +19,7 @@ class MainScreen extends StatefulWidget {
 
 class _MainScreenState extends State<MainScreen> {
   final db = FirebaseFirestore.instance;
+  late String todoID;
   late Map<String, dynamic> task;
 
   // Widget that creates the info for each column
@@ -33,6 +35,7 @@ class _MainScreenState extends State<MainScreen> {
               child: CircularProgressIndicator(),
             );
           } else {
+            todoID = snapshot.data!.docs.elementAt(0).id;
             if (snapshot.data!.docs.elementAt(index).data().isNotEmpty) {
               return Column(
                 children: [
@@ -203,7 +206,9 @@ class _MainScreenState extends State<MainScreen> {
                       onPressed: () {
                         Navigator.of(context).push(
                           MaterialPageRoute(
-                            builder: (context) => const CreateTaskScreen(),
+                            builder: (context) => CreateTaskScreen(
+                              todoID: todoID,
+                            ),
                           ),
                         );
                       },
