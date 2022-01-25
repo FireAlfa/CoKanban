@@ -175,7 +175,7 @@ class _MainScreenState extends State<MainScreen> {
                             height: (MediaQuery.of(context).size.height -
                                 MediaQuery.of(context).padding.top -
                                 kToolbarHeight -
-                                25),
+                                20),
                             child: ScrollSnapList(
                               onItemFocus: _onItemFocus,
                               itemSize: MediaQuery.of(context)
