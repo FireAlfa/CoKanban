@@ -33,77 +33,82 @@ class _MainScreenState extends State<MainScreen> {
               child: CircularProgressIndicator(),
             );
           } else {
-            return Column(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(0, 20, 0, 0),
-                  child: Text(
-                    snapshot.data!.docs.elementAt(index).get("title"),
-                    style: const TextStyle(
-                        fontSize: 30, color: Color.fromARGB(255, 0, 94, 131)),
+            if (snapshot.data!.docs.elementAt(index).data().isNotEmpty) {
+              return Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(0, 20, 0, 0),
+                    child: Text(
+                      snapshot.data!.docs.elementAt(index).get("title"),
+                      style: const TextStyle(
+                          fontSize: 30, color: Color.fromARGB(255, 0, 94, 131)),
+                    ),
                   ),
-                ),
-                const SizedBox(
-                  height: 10,
-                ),
-                SizedBox(
-                  height: (MediaQuery.of(context).size.height -
-                      MediaQuery.of(context).padding.top -
-                      kToolbarHeight -
-                      90),
-                  width: MediaQuery.of(context).size.width,
-                  child: StreamBuilder(
-                    stream: db
-                        .collection(
-                            "boards/${snapshot.data!.docs.elementAt(index).id}/tasks")
-                        .snapshots(),
-                    builder: (
-                      BuildContext context,
-                      AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>>
-                          snapshot2,
-                    ) {
-                      if (!snapshot2.hasData) {
-                        return const Center(
-                          child: CircularProgressIndicator(),
-                        );
-                      } else {
-                        if (snapshot2.data!.docs
-                            .elementAt(0)
-                            .data()
-                            .isNotEmpty) {
-                          return ListView.builder(
-                            shrinkWrap: true,
-                            scrollDirection: Axis.vertical,
-                            physics: const NeverScrollableScrollPhysics(),
-                            itemCount: snapshot2.data!.docs.length,
-                            itemBuilder: (BuildContext context, int index) {
-                              for (int i = 0;
-                                  i < snapshot2.data!.docs.length;
-                                  i++) {
-                                task = snapshot2.data!.docs
-                                    .elementAt(index)
-                                    .data();
-                                return Align(
-                                  child: Task(
-                                    title: task["name"].toString(),
-                                    users: task["user"].toString(),
-                                    tag: task["tag"].toString(),
-                                    description: task["description"].toString(),
-                                  ),
-                                );
-                              }
-                              throw '';
-                            },
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  SizedBox(
+                    height: (MediaQuery.of(context).size.height -
+                        MediaQuery.of(context).padding.top -
+                        kToolbarHeight -
+                        90),
+                    width: MediaQuery.of(context).size.width,
+                    child: StreamBuilder(
+                      stream: db
+                          .collection(
+                              "boards/${snapshot.data!.docs.elementAt(index).id}/tasks")
+                          .snapshots(),
+                      builder: (
+                        BuildContext context,
+                        AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>>
+                            snapshot2,
+                      ) {
+                        if (!snapshot2.hasData) {
+                          return const Center(
+                            child: CircularProgressIndicator(),
                           );
                         } else {
-                          return const Center(child: Text("Board is Empty"));
+                          if (snapshot2.data!.docs
+                              .elementAt(0)
+                              .data()
+                              .isNotEmpty) {
+                            return ListView.builder(
+                              shrinkWrap: true,
+                              scrollDirection: Axis.vertical,
+                              physics: const NeverScrollableScrollPhysics(),
+                              itemCount: snapshot2.data!.docs.length,
+                              itemBuilder: (BuildContext context, int index) {
+                                for (int i = 0;
+                                    i < snapshot2.data!.docs.length;
+                                    i++) {
+                                  task = snapshot2.data!.docs
+                                      .elementAt(index)
+                                      .data();
+                                  return Align(
+                                    child: Task(
+                                      title: task["name"].toString(),
+                                      users: task["user"].toString(),
+                                      tag: task["tag"].toString(),
+                                      description:
+                                          task["description"].toString(),
+                                    ),
+                                  );
+                                }
+                                throw '';
+                              },
+                            );
+                          } else {
+                            return const Center(child: Text("Board is Empty"));
+                          }
                         }
-                      }
-                    },
+                      },
+                    ),
                   ),
-                ),
-              ],
-            );
+                ],
+              );
+            } else {
+              return const Center(child: Text("Board is Empty"));
+            }
           }
         });
   }
