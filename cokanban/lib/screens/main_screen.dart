@@ -18,6 +18,7 @@ class MainScreen extends StatefulWidget {
 
 class _MainScreenState extends State<MainScreen> {
   final db = FirebaseFirestore.instance;
+  late Map<String, dynamic> task;
 
   // Widget that creates the info for each column
   Widget _columnItemBuilder(BuildContext conext, int index) {
@@ -32,7 +33,6 @@ class _MainScreenState extends State<MainScreen> {
               child: CircularProgressIndicator(),
             );
           } else {
-            List<dynamic> l = snapshot.data!.docs.elementAt(index).get("tasks");
             return Column(
               children: [
                 Padding(
@@ -52,31 +52,53 @@ class _MainScreenState extends State<MainScreen> {
                       kToolbarHeight -
                       90),
                   width: MediaQuery.of(context).size.width,
-                  child: ListView.builder(
-                    shrinkWrap: true,
-                    scrollDirection: Axis.vertical,
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemCount: l.length,
-                    itemBuilder: (BuildContext context, int index) {
-                      if (l.isNotEmpty) {
-                        for (int i = 0; i < l.length; i++) {
-                          if (l[i].isNotEmpty) {
-                            return Align(
-                              child: Task(
-                                title: l[i]["name"].toString(),
-                                users: l[i]["users"][0].toString(),
-                                tag: l[i]["tags"][0].toString(),
-                                description: l[i]["description"].toString(),
-                              ),
-                            );
-                          } else {
-                            return const Center(child: Text("Board is Empty"));
-                          }
-                        }
+                  child: StreamBuilder(
+                    stream: db
+                        .collection(
+                            "boards/${snapshot.data!.docs.elementAt(index).id}/tasks")
+                        .snapshots(),
+                    builder: (
+                      BuildContext context,
+                      AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>>
+                          snapshot2,
+                    ) {
+                      if (!snapshot2.hasData) {
+                        return const Center(
+                          child: CircularProgressIndicator(),
+                        );
                       } else {
-                        return const Center(child: Text("Board is Empty"));
+                        if (snapshot2.data!.docs
+                            .elementAt(0)
+                            .data()
+                            .isNotEmpty) {
+                          return ListView.builder(
+                            shrinkWrap: true,
+                            scrollDirection: Axis.vertical,
+                            physics: const NeverScrollableScrollPhysics(),
+                            itemCount: snapshot2.data!.docs.length,
+                            itemBuilder: (BuildContext context, int index) {
+                              for (int i = 0;
+                                  i < snapshot2.data!.docs.length;
+                                  i++) {
+                                task = snapshot2.data!.docs
+                                    .elementAt(index)
+                                    .data();
+                                return Align(
+                                  child: Task(
+                                    title: task["name"].toString(),
+                                    users: task["user"].toString(),
+                                    tag: task["tag"].toString(),
+                                    description: task["description"].toString(),
+                                  ),
+                                );
+                              }
+                              throw '';
+                            },
+                          );
+                        } else {
+                          return const Center(child: Text("Board is Empty"));
+                        }
                       }
-                      throw '';
                     },
                   ),
                 ),

@@ -61,7 +61,6 @@ class _CreateTaskScreenState extends State<CreateTaskScreen> {
           } else {
             // If we have data, show the screen
             doc = snapshot.data!.docs.elementAt(0);
-            List<dynamic> l = snapshot.data!.docs.elementAt(0).get("tasks");
             uid = snapshot.data!.docs.elementAt(0).id;
             return Column(
               children: [
