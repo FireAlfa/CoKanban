@@ -47,6 +47,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         // If we don't get the information yet, show loading indicator
         if (!snapshot.hasData) {
           return const Scaffold(
+            backgroundColor: Color.fromARGB(255, 83, 86, 143),
             body: Center(
               child: CircularProgressIndicator(),
             ),
@@ -57,7 +58,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
         final String nickname = snapshot.data!.get("nickname");
         if (doc != null) {
           return Scaffold(
+            backgroundColor: const Color.fromARGB(255, 83, 86, 143),
             appBar: AppBar(
+              backgroundColor: const Color.fromARGB(255, 83, 86, 143),
               centerTitle: true,
               title: const Text("Profile"),
             ),
@@ -85,7 +88,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   child: TextField(
                     decoration: const InputDecoration(
                       border: OutlineInputBorder(),
-                      labelText: "Nickname",
+                      labelText: "New Username",
                     ),
                     controller: controller,
                   ),
@@ -94,14 +97,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   flex: 1,
                 ),
                 ElevatedButton(
-                    onPressed: () {
-                      db
-                          .doc("/users/${widget.userID}")
-                          .update({'nickname': controller.text});
-                    },
-                    style: ElevatedButton.styleFrom(
-                        textStyle: const TextStyle(fontSize: 16)),
-                    child: const Text("Save Changes")),
+                  onPressed: () {
+                    db
+                        .doc("/users/${widget.userID}")
+                        .update({'nickname': controller.text});
+                  },
+                  style: ElevatedButton.styleFrom(
+                      primary: const Color.fromARGB(255, 0, 155, 173)),
+                  child: Text("Save Changes",
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: Colors.blueGrey.shade900,
+                        backgroundColor: const Color.fromARGB(255, 0, 155, 173),
+                      )),
+                ),
                 const Spacer(
                   flex: 7,
                 ),
@@ -115,9 +124,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       );
                     },
                     style: ElevatedButton.styleFrom(
-                        primary: const Color.fromARGB(255, 200, 0, 0),
-                        textStyle: const TextStyle(fontSize: 18)),
-                    child: const Text("Log out")),
+                      primary: const Color.fromARGB(255, 170, 52, 52),
+                    ),
+                    child: Text("Log out",
+                        style: TextStyle(
+                          fontSize: 18,
+                          color: Colors.blueGrey.shade900,
+                        ))),
                 const Spacer(
                   flex: 3,
                 ),
