@@ -21,8 +21,6 @@ class _MainScreenState extends State<MainScreen> {
 
   // Widget that creates the info for each column
   Widget _columnItemBuilder(BuildContext conext, int index) {
-    late Map<String, dynamic> m;
-
     return StreamBuilder(
         stream: db.collection("boards").snapshots(),
         builder: (
@@ -62,15 +60,21 @@ class _MainScreenState extends State<MainScreen> {
                     itemBuilder: (BuildContext context, int index) {
                       if (l.isNotEmpty) {
                         for (int i = 0; i < l.length; i++) {
-                          return Align(
-                            child: Task(
-                              title: l[i]["name"].toString(),
-                              users: l[i]["users"][0].toString(),
-                              tag: l[i]["tags"][0].toString(),
-                              description: l[i]["description"].toString(),
-                            ),
-                          );
+                          if (l[i].isNotEmpty) {
+                            return Align(
+                              child: Task(
+                                title: l[i]["name"].toString(),
+                                users: l[i]["users"][0].toString(),
+                                tag: l[i]["tags"][0].toString(),
+                                description: l[i]["description"].toString(),
+                              ),
+                            );
+                          } else {
+                            return const Center(child: Text("Board is Empty"));
+                          }
                         }
+                      } else {
+                        return const Center(child: Text("Board is Empty"));
                       }
                       throw '';
                     },
@@ -118,7 +122,9 @@ class _MainScreenState extends State<MainScreen> {
                       onPressed: () {
                         Navigator.of(context).push(
                           MaterialPageRoute(
-                            builder: (context) => const ProfileScreen(),
+                            builder: (context) => ProfileScreen(
+                              userID: widget.userID,
+                            ),
                           ),
                         );
                       },
