@@ -1,10 +1,22 @@
 import 'package:flutter/material.dart';
 
-class Task extends StatelessWidget {
+class Task extends StatefulWidget {
+  final String title;
+  final String tag;
+  final String description;
+
   const Task({
     Key? key,
+    required this.title,
+    required this.tag,
+    required this.description,
   }) : super(key: key);
 
+  @override
+  _TaskState createState() => _TaskState();
+}
+
+class _TaskState extends State<Task> {
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -18,16 +30,16 @@ class Task extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
-            children: const [
-              Text("Title"),
-              Spacer(),
-              Text("Tag"),
+            children: [
+              Text(widget.title),
+              const Spacer(),
+              Text(widget.tag),
             ],
           ),
           const SizedBox(
             height: 10,
           ),
-          const Text("Description")
+          Text(widget.description),
         ],
       ),
     );

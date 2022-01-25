@@ -19,63 +19,65 @@ class MainScreen extends StatefulWidget {
 class _MainScreenState extends State<MainScreen> {
   final db = FirebaseFirestore.instance;
 
-  Future<dynamic> getBoardAmount() async {
-    dynamic query = db.collection("boards");
-    dynamic snapshot = await query.get();
-    dynamic count = snapshot.size;
-    return count;
-  }
-
   // Widget that creates the info for each column
   Widget _columnItemBuilder(BuildContext conext, int index) {
-    late String text;
-
-    if (index == 0) {
-      text = "To-Do";
-    }
-    if (index == 1) {
-      text = "In Process";
-    }
-    if (index == 2) {
-      text = "Done";
-    }
-    if (index > 2) {
-      text = "New Board";
-    }
+    late Map<String, dynamic> m;
 
     return StreamBuilder(
         stream: db.collection("boards").snapshots(),
         builder: (
           BuildContext context,
-          AsyncSnapshot<QuerySnapshot> snapshot,
+          AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot,
         ) {
           if (!snapshot.hasData) {
             return const Center(
               child: CircularProgressIndicator(),
             );
           } else {
-            return SizedBox(
-              width: MediaQuery.of(context).size.width,
-              child: Align(
-                alignment: Alignment.topCenter,
-                child: Column(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(0, 20, 0, 0),
-                      child: Text(
-                        snapshot.data!.docs.elementAt(index).get("title"),
-                        style: const TextStyle(
-                            fontSize: 30,
-                            color: Color.fromARGB(255, 0, 94, 131)),
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    const Task(),
-                  ],
+            List<dynamic> l = snapshot.data!.docs.elementAt(index).get("tasks");
+            return Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(0, 20, 0, 0),
+                  child: Text(
+                    snapshot.data!.docs.elementAt(index).get("title"),
+                    style: const TextStyle(
+                        fontSize: 30, color: Color.fromARGB(255, 0, 94, 131)),
+                  ),
                 ),
-              ),
+                const SizedBox(
+                  height: 10,
+                ),
+                SizedBox(
+                  height: (MediaQuery.of(context).size.height -
+                      MediaQuery.of(context).padding.top -
+                      kToolbarHeight -
+                      90),
+                  width: MediaQuery.of(context).size.width,
+                  child: ListView.builder(
+                    shrinkWrap: true,
+                    scrollDirection: Axis.vertical,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemCount: l.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      if (l.isNotEmpty) {
+                        for (int i = 0; i < l.length; i++) {
+                          return Align(
+                            child: Task(
+                              title: l[i]["name"].toString(),
+                              tag: l[i]["tags"][0].toString(),
+                              description: l[i]["description"].toString(),
+                            ),
+                          );
+                        }
+                      } else {
+                        return const Center(child: Text("Empty Board"));
+                      }
+                      throw '';
+                    },
+                  ),
+                ),
+              ],
             );
           }
         });
@@ -95,8 +97,6 @@ class _MainScreenState extends State<MainScreen> {
         BuildContext context,
         AsyncSnapshot<DocumentSnapshot> snapshot,
       ) {
-        // Future<dynamic> future = getBoardAmount();
-        // future.then((dynamic boardAmount) {boardAmount = })
         // If we don't get the information yet, show loading indicator
         if (!snapshot.hasData) {
           return const Scaffold(
@@ -147,7 +147,8 @@ class _MainScreenState extends State<MainScreen> {
                             // Height of column, gets screen size
                             height: (MediaQuery.of(context).size.height -
                                 MediaQuery.of(context).padding.top -
-                                kToolbarHeight),
+                                kToolbarHeight -
+                                25),
                             child: ScrollSnapList(
                               onItemFocus: _onItemFocus,
                               itemSize: MediaQuery.of(context)
