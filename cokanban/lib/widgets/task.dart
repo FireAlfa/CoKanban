@@ -2,12 +2,14 @@ import 'package:flutter/material.dart';
 
 class Task extends StatefulWidget {
   final String title;
+  final String users;
   final String tag;
   final String description;
 
   const Task({
     Key? key,
     required this.title,
+    required this.users,
     required this.tag,
     required this.description,
   }) : super(key: key);
@@ -31,15 +33,32 @@ class _TaskState extends State<Task> {
         children: [
           Row(
             children: [
-              Text(widget.title),
+              Text(
+                widget.title,
+                style: const TextStyle(fontSize: 20),
+              ),
               const Spacer(),
-              Text(widget.tag),
+              Container(
+                decoration: const BoxDecoration(
+                    color: Color.fromARGB(255, 196, 196, 196)),
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(8, 2, 8, 2),
+                  child: Text(widget.tag),
+                ),
+              ),
             ],
           ),
           const SizedBox(
-            height: 10,
+            height: 5,
+          ),
+          Text(widget.users),
+          const SizedBox(
+            height: 15,
           ),
           Text(widget.description),
+          const SizedBox(
+            height: 5,
+          ),
         ],
       ),
     );

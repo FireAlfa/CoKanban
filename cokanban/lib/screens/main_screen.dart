@@ -65,13 +65,12 @@ class _MainScreenState extends State<MainScreen> {
                           return Align(
                             child: Task(
                               title: l[i]["name"].toString(),
+                              users: l[i]["users"][0].toString(),
                               tag: l[i]["tags"][0].toString(),
                               description: l[i]["description"].toString(),
                             ),
                           );
                         }
-                      } else {
-                        return const Center(child: Text("Empty Board"));
                       }
                       throw '';
                     },
