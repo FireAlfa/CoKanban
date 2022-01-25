@@ -20,6 +20,7 @@ class MainScreen extends StatefulWidget {
 class _MainScreenState extends State<MainScreen> {
   final db = FirebaseFirestore.instance;
   late String todoID;
+  late String taskID;
   late Map<String, dynamic> task;
 
   // Widget that creates the info for each column
@@ -87,8 +88,11 @@ class _MainScreenState extends State<MainScreen> {
                                   task = snapshot2.data!.docs
                                       .elementAt(index)
                                       .data();
+                                  taskID =
+                                      snapshot2.data!.docs.elementAt(index).id;
                                   return Align(
                                     child: Task(
+                                      taskID: taskID,
                                       title: task["name"].toString(),
                                       users: task["user"].toString(),
                                       tag: task["tag"].toString(),
