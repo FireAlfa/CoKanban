@@ -63,17 +63,23 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ),
             body: Column(
               children: [
-                const SizedBox(height: 90),
+                const Spacer(
+                  flex: 5,
+                ),
                 const Icon(
                   Icons.person,
                   size: 100,
                 ),
-                const SizedBox(height: 20),
+                const Spacer(
+                  flex: 2,
+                ),
                 Text(
                   nickname,
                   textScaleFactor: 2,
                 ),
-                const SizedBox(height: 70),
+                const Spacer(
+                  flex: 2,
+                ),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 50),
                   child: TextField(
@@ -84,8 +90,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     controller: controller,
                   ),
                 ),
-                const SizedBox(
-                  height: 50,
+                const Spacer(
+                  flex: 1,
                 ),
                 ElevatedButton(
                     onPressed: () {
@@ -96,7 +102,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     style: ElevatedButton.styleFrom(
                         textStyle: const TextStyle(fontSize: 16)),
                     child: const Text("Save Changes")),
-                const Spacer(),
+                const Spacer(
+                  flex: 7,
+                ),
                 ElevatedButton(
                     onPressed: () {
                       FirebaseAuth.instance.signOut();
@@ -110,8 +118,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         primary: const Color.fromARGB(255, 200, 0, 0),
                         textStyle: const TextStyle(fontSize: 18)),
                     child: const Text("Log out")),
-                const SizedBox(
-                  height: 50,
+                const Spacer(
+                  flex: 3,
                 ),
               ],
             ),
